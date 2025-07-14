@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block content %}
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  {% include 'accounts/admin_sidebar.html' %}
+
+  <!-- Main Content -->
+  <div class="main-section">
+    <h3>Assigned Cases</h3>
+
+    <!-- Cases List -->
+    {% for case in cases %}
+    <div class="card">
+      {% if case.pk %}
+            <a href="{% url 'case_detail' case.pk %}" style="text-decoration: none; color: #6A0DAD; font-weight: bold;">{{ case.title }}</a>
+        {% else %}
+            {{ case.title }}
+        {% endif %}
+      <p>Status: <strong>{{ case.status }}</strong></p>
+      <small>Registered at: {{ case.created_at|naturaltime }}</small>
+      <p>Handler: {{ case.assigned_to.username }}</p>
+      {% if case.is_anonymous %}
+        <p><strong>Reported by:</strong> Anonymous</p>
+      {% else %}
+        <p><strong>Reported by:</strong> {{ case.created_by.username }}</p>
+      {% endif %}
+      <small>Last Updated: {{ case.updated_at|naturaltime }}</small>
+    </div>
+    {% empty %}
+      <p>No Assigned cases found.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+

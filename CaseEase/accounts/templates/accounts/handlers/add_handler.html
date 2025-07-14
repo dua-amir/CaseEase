@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  .dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f4ff;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .main-section {
+    flex: 1;
+    padding: 40px;
+  }
+
+  .main-section h2 {
+    color: #6A0DAD;
+    margin-bottom: 30px;
+  }
+
+  .card {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    max-width: 600px;
+  }
+
+  .card label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+  }
+
+  .card input[type="text"],
+  .card input[type="email"],
+  .card input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    transition: border 0.3s ease;
+  }
+
+  .card input:focus {
+    border-color: #6A0DAD;
+    outline: none;
+  }
+
+  .card button[type="submit"] {
+    background-color: #6A0DAD;
+    color: white;
+    padding: 12px 20px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .card button:hover {
+    background-color: #52008d;
+  }
+</style>
+
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  {% include 'accounts/admin_sidebar.html' %}
+
+  <!-- Main Content -->
+  <div class="main-section">
+    <h2>Add New Handler</h2>
+
+    <div class="card">
+      <form method="post">
+        {% csrf_token %}
+        
+        <label>Username:</label>
+        <input type="text" name="username" required>
+
+        <label>Email:</label>
+        <input type="email" name="email" required>
+
+        <label>Password:</label>
+        <input type="password" name="password" required>
+
+        <button type="submit">Add Handler</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

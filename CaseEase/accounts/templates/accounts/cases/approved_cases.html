@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block content %}
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  {% include 'accounts/admin_sidebar.html' %}
+
+  <!-- Main Content -->
+  <div class="main-section">
+    <h3>Approved Cases</h3>
+
+    <!-- Cases List -->
+    {% for case in cases %}
+      <div class="card">
+        {% if case.pk %}
+            <a href="{% url 'case_detail' case.pk %}" style="text-decoration: none; color: #6A0DAD; font-weight: bold;">{{ case.title }}</a>
+        {% else %}
+            {{ case.title }}
+        {% endif %}
+        <p>Approved by Admin</p>
+        <p>Status: <strong>{{ case.status }}</strong></p>
+        <small>Registered at: {{ case.created_at|naturaltime }}</small>
+        {% if case.is_anonymous %}
+          <p><strong>Reported by:</strong> Anonymous</p>
+        {% else %}
+          <p><strong>Reported by:</strong> {{ case.created_by.username }}</p>
+        {% endif %}
+        <small>Approved: {{ case.updated_at|naturaltime }}</small>
+        <!-- Assign Button -->
+        <a href="{% url 'assign_handler' case.id %}" 
+          class="btn" 
+          style="background: #6A0DAD; color: white; padding: 6px 12px; border-radius: 5px; text-decoration: none;">
+          Assign Handler
+        </a>
+
+  
+      </div>
+    {% empty %}
+      <p>No Approved cases found.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

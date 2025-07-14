@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+<style>
+    .dashboard-container {
+        display: grid;
+        grid-template-columns: 1fr 4fr;
+        gap: 30px;
+        min-height: 90vh;
+        margin-top: 30px;
+    }
+    .sidebar {
+        background: #f3eaff;
+        padding: 25px;
+        border-radius: 10px;
+    }
+    .sidebar h2 {
+        color: #6A0DAD;
+        margin-bottom: 20px;
+    }
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin-top: 10px;
+        margin-bottom: 15px;
+    }
+    .sidebar li {
+        margin-bottom: 10px;
+    }
+    .sidebar strong {
+        color: #6A0DAD;
+        font-weight: 800;
+        margin-bottom: 15px;
+        font-size: larger;
+    }
+    .sidebar a {
+        color: #333;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: large;
+    }
+    .sidebar a:hover {
+        color: #6A0DAD;
+        text-decoration: underline;
+    }
+    .main-section {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .card {
+        padding: 15px;
+        border-left: 5px solid #6A0DAD;
+        border: 1px solid #e4d6fa;
+        margin-bottom: 15px;
+        border-radius: 6px;
+    }
+    .card h4 {
+        margin: 0;
+        color: #6A0DAD;
+    }
+    .card p {
+        margin: 5px 0;
+    }
+    .dropdown {
+        margin-bottom: 25px;
+    }
+    .dropdown label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 8px;
+    }
+    .dropdown input[type="text"] {
+        width: 100%;
+        padding: 7px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 12px;
+        box-sizing: border-box;
+    }
+</style>
+
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  {% include 'accounts/handler_sidebar.html' %}
+
+  <!-- Main Content -->
+  <div class="main-section">
+    <h3>Ongoing Cases</h3>
+
+    <!-- Cases List -->
+    {% for case in cases %}
+      <div class="card">
+        {% if case.pk %}
+            <a href="{% url 'case_detail' case.pk %}" style="text-decoration: none; color: #6A0DAD; font-weight: bold;">{{ case.title }}</a>
+        {% else %}
+            {{ case.title }}
+        {% endif %}
+        <p>Status: <strong>{{ case.status }}</strong></p>
+        <small>Registered at: {{ case.created_at|naturaltime }}</small>
+                
+        {% if case.is_anonymous %}
+          <p><strong>Reported by:</strong> Anonymous</p>
+        {% else %}
+          <p><strong>Reported by:</strong> {{ case.created_by.username }}</p>
+        {% endif %}
+        <p><strong>Started on:</strong> {{ case.updated_at }}</p>
+        <form method="post" action="{% url 'update_status' case.pk %}" >
+            {% csrf_token %}
+           <label><strong>Update Status: </strong></label>
+           <select name="status" style="padding: 10px 15px; margin-top: 10px; border-radius: 6px; text-decoration: none;font-size: medium; font-weight: 300;">
+            <option value="In Progress" {% if case.status == "In Progress" %}selected{% endif %}>In Progress</option>
+            <option value="Waiting for Info" {% if case.status == "Waiting for Info" %}selected{% endif %}>Waiting for Info</option>
+            <option value="Resolved" {% if case.status == "Resolved" %}selected{% endif %}>Resolved</option>
+            <option value="Closed" {% if case.status == "Closed" %}selected{% endif %}>Closed</option>
+            </select>
+            <button type="submit" style="background: #6A0DAD; color: #fff; padding: 10px 15px; margin-top: 10px; border-radius: 6px; text-decoration: none; font-weight: 200;">Update</button>
+        </form>
+        <small>Last updated: {{ case.updated_at|naturaltime }}</small>
+      </div>
+    {% empty %}
+      <p>No Ongoing cases found.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

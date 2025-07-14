@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<style>
+    .dashboard-container {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: 30px;
+        min-height: 80vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        background: #f3eaff;
+        padding: 25px 20px;
+        border-radius: 10px;
+    }
+
+    .sidebar h3 {
+        color: #6A0DAD;
+        margin-bottom: 20px;
+        font-size: 28px;
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .sidebar li {
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .sidebar a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 600;
+        font-size: 20px;
+        flex-grow: 1;
+    }
+    .sidebar a:hover{
+        text-decoration:underline;
+        color: #6A0DAD;
+        font-weight: 600;
+        font-size: 20px;
+    }
+
+    .sidebar span.badge {
+        background: #6A0DAD;
+        color: white;
+        padding: 3px 10px;
+        border-radius: 2px;
+        font-size: 13px;
+        margin-left: 10px;
+        justify-content: end;
+    }
+    
+    .main-content {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .case-card {
+        border: 1px solid #ddd;
+        border-left: 4px solid #6A0DAD;
+        margin-bottom: 15px;
+        padding: 15px;
+        border-radius: 6px;
+    }
+
+    .case-card h4 {
+        margin: 0;
+        color: #6A0DAD;
+    }
+
+    .case-card small {
+        color: #777;
+    }
+
+    .case-card form {
+        margin-top: 10px;
+    }
+
+    .case-card button {
+        background: #6A0DAD;
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .case-card button:hover {
+        background: #590aa8;
+    }
+</style>
+
+<div class="dashboard-container">
+  <div class="sidebar">
+        <h3>Handler Panel</h3>
+        <ul>
+            <li><a href="{% url 'handler_dashboard' %}">All Cases <span class="badge">{{all_count}}</span></a></li>
+            <li><a href="{% url 'assigned_cases' %}">Assigned Cases <span class="badge">{{assigned_count}}</span></a></li>
+            <li><a href="{% url 'ongoing_cases' %}">Ongoing Cases <span class="badge">{{ongoing_count}}</span></a></li>
+            <li><a href="{% url 'closed_cases' %}">Closed Cases <span class="badge">{{closed_count}}</span></a></li>
+        </ul>
+    </div>
+  <div class="main-content">
+    <h2>Assigned Cases</h2>
+    {% for case in cases %}
+      <div class="case-card">
+        <h4>{{ case.title }}</h4>
+        <p>Status: <strong>{{ case.status }}</strong></p>
+        <small>Assigned on: {{ case.created_at|naturaltime}}</small>
+
+        <form method="post" action="{% url 'start_operating' case.pk %}" style="margin-top: 10px;">
+          {% csrf_token %}
+          <button type="submit" style="padding: 6px 14px; background-color: #6A0DAD; color: white; border: none; border-radius: 5px;">
+            Start Operating
+          </button>
+        </form>
+      </div>
+    {% empty %}
+      <p>No assigned cases found.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

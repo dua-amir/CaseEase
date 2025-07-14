@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block content %}
+
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  {% include 'accounts/admin_sidebar.html' %}
+
+  <!-- Main Content -->
+  <div class="main-section">
+    <h3 style="display: flex; justify-content: space-between; align-items: center;">
+      All Users</h3>
+
+    <!-- Cases List -->
+    {% for user in users %}
+      <div class="card">
+        <h4>{{ user.username }}</h4>
+      <p>Email: {{ user.email }}</p>
+      <p>Cases Registered: {{ user.cases_created.count }}</p>
+      <small>Joined: {{ user.date_joined|naturaltime }}</small>
+      <a href="{% url 'remove_user' user.pk %}" class="btn btn-danger" style="background: #6A0DAD; color: #fff; padding: 2px 15px; border-radius: 6px; text-decoration: none; font-weight: 200;">Remove</a>
+      </div>
+    {% empty %}
+      <p>No Uers found.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

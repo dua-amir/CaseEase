@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% include 'accounts/admin_sidebar.html' %}
+<div class="main-section">
+  <h3>Remove Handler</h3>
+  <p>Are you sure you want to remove <strong>{{ handler.username }}</strong>?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, Remove</button>
+    <a href="{% url 'view_handlers' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

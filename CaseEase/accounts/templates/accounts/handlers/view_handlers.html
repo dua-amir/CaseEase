@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block content %}
+
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  {% include 'accounts/admin_sidebar.html' %}
+
+  <!-- Main Content -->
+  <div class="main-section">
+    <h3 style="display: flex; justify-content: space-between; align-items: center;">
+      All Handlers
+      <a href="{% url 'add_handler' %}" class="btn btn-primary" style="background: #6A0DAD; color: #fff; padding: 8px 20px; border-radius: 6px; text-decoration: none; font-weight: 600;">Add Handler</a>
+    </h3>
+
+    <!-- Cases List -->
+    {% for handler in handlers %}
+      <div class="card">
+        <h4>{{ handler.username }}</h4>
+        <p>Email: {{ handler.email }}</p>
+        <p>Cases Assigned: {{ handler.cases_assigned.count }}</p>
+        <small>Joined: {{ handler.date_joined|naturaltime }}</small>
+        <a href="{% url 'remove_handler' handler.pk %}" class="btn btn-danger" style="background: #6A0DAD; color: #fff; padding: 2px 15px; border-radius: 6px; text-decoration: none; font-weight: 200;">Remove</a>
+        
+      </div>
+    {% empty %}
+      <p>No Handlers found.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

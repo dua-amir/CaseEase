@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .profile-container {
+        width: 50%;
+        margin: 40px auto;
+        padding: 30px;
+        background: #f9f2ff;
+        border-radius: 12px;
+        box-shadow: 0 0 10px #ddd;
+        text-align: center;
+    }
+    .profile-container img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 20px;
+    }
+    .profile-container h2 {
+        color: #6A0DAD;
+        margin-bottom: 10px;
+    }
+    .profile-container p {
+        margin: 5px;
+        font-weight: 500;
+    }
+    .profile-btns a {
+        display: inline-block;
+        margin: 10px;
+        padding: 10px 25px;
+        background: #6A0DAD;
+        color: #fff;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .profile-btns a:hover {
+        background: #4e0c91;
+    }
+</style>
+
+<div class="profile-container">
+    <!-- Back Arrow Icon -->
+    <div style="margin: 20px;">
+    <a href="{% url back_url %}" style="text-decoration: none; color: #6A0DAD; font-weight: bold;">
+        ← Back to Dashboard
+    </a>
+    </div>
+
+    {% if user.profile_image %}
+        <img src="{{ user.profile_image.url }}" alt="Profile">
+    {% else %}
+        <img src="{% static 'images/avatar.png' %}" alt="Default Profile">
+    {% endif %}
+
+    <h2>{{ request.user.username }}</h2>
+    <p>{{ request.user.email }}</p>
+    <p><strong>Role:</strong>
+        {% if request.user.is_superuser %}Admin
+        {% elif request.user.groups.first.name == 'handler' %}Handler
+        {% else %}User{% endif %}
+    </p>
+    <p><strong>Joined:</strong> {{ request.user.date_joined|date:"d M, Y" }}</p>
+
+    <div class="profile-btns">
+        <a href="{% url 'edit_profile' %}">Edit Profile</a>
+        <a href="{% url 'change_password' %}">Change Password</a>
+    </div>
+</div>
+{% endblock %}

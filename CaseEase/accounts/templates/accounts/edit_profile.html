@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .form-container {
+        width: 50%;
+        margin: 40px auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px #eee;
+    }
+    input, button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin: 15px 0;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+    button {
+        background: #6A0DAD;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    button:hover {
+        background: #4e0c91;
+    }
+    
+</style>
+
+<div class="form-container">
+    <div style="margin: 20px;">
+    <a href="{% url 'view_profile' %}" style="text-decoration: none; color: #6A0DAD; font-weight: bold;">
+        ← Back to Profile
+    </a>
+    </div>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Username:</label>
+        <input type="text" name="username" value="{{ request.user.username }}" required>
+
+        <label>Email:</label>
+        <input type="email" name="email" value="{{ request.user.email }}" required>
+
+        <label>Profile Image:</label>
+        <input type="file" name="profile_image">
+
+        <label>Date Joined:</label>
+        <input type="text" value="{{ request.user.date_joined|date:'d M, Y' }}" readonly>
+
+        <button type="submit">Update Profile</button>
+    </form>
+</div>
+{% endblock %}
