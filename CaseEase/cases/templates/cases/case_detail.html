@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    .case-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        margin: 50px auto;
+        max-width: 1200px;
+    }
+
+    .card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 0 12px rgba(106, 13, 173, 0.1);
+        width: 48%;
+    }
+
+    .card h2, .card h3 {
+        color: #6A0DAD;
+        margin-bottom: 20px;
+    }
+
+    .card p {
+        margin-bottom: 10px;
+        color: #444;
+    }
+
+    .timeline-entry {
+        border-left: 3px solid #6A0DAD;
+        padding-left: 10px;
+        margin-bottom: 15px;
+    }
+
+    .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        background: #6A0DAD;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+    }
+</style>
+
+<div class="case-container">
+
+    <!-- Left: Case Detail -->
+    <div class="card">
+        <h2>{{ case.title }}</h2>
+        <p><strong>Status:</strong> {{ case.status }}</p>
+        <p><strong>Description:</strong> {{ case.description }}</p>
+        <p><strong>Location:</strong> {{ case.location }}</p>
+        <p><strong>Incident Date:</strong> {{ case.incident_date }}</p>
+        <p><strong>Suspect:</strong> {{ case.suspect_name }}</p>
+        <p><strong>Witnesses:</strong> {{ case.witnesses }}</p>
+
+        {% if case.uploaded_file %}
+            <p><strong>Attached File:</strong>
+                <a href="{{ case.uploaded_file.url }}" target="_blank">Open</a> |
+                <a href="{{ case.uploaded_file.url }}" download>Download</a>
+            </p>
+        {% endif %}
+
+        <p><strong>Reported By:</strong>
+            {% if case.is_anonymous %} Anonymous {% else %} {{ case.created_by.username }} {% endif %}
+        </p>
+
+        {% if case.assigned_to %}
+            <p><strong>Assigned To:</strong> {{ case.assigned_to.username }}</p>
+        {% endif %}
+
+        {% if case.progress_notes %}
+            <p><strong>Progress Notes:</strong> {{ case.progress_notes }}</p>
+        {% endif %}
+
+        {% if case.report_file %}
+            <p><strong>Report File:</strong>
+                <a href="{{ case.report_file.url }}" target="_blank">Open</a> |
+                <a href="{{ case.report_file.url }}" download>Download</a>
+            </p>
+        {% endif %}
+
+        <a href="javascript:history.back()" class="back-btn">← Go Back</a>
+    </div>
+
+    <!-- Right: Case History -->
+    <div class="card">
+    <h3>Case History</h3>
+    {% for record in history %}
+        <p>
+            <strong>{{ record.action }}</strong><br>
+            By: {{ record.performed_by.username|default:"System" }}<br>
+            On: {{ record.timestamp|date:"M d, Y H:i" }}
+        </p>
+    {% empty %}
+        <p>No history found.</p>
+    {% endfor %}
+</div>
+
+
+</div>
+
+{% endblock %}
